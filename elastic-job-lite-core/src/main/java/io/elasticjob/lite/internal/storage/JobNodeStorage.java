@@ -218,6 +218,7 @@ public final class JobNodeStorage {
     
     /**
      * 注册数据监听器.
+     * 每个不同的服务，都会订阅数据实现功能逻辑，
      * 
      * @param listener 数据监听器
      */

@@ -50,4 +50,11 @@ public final class OdevitySortByNameJobShardingStrategy implements JobShardingSt
         }
         return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shardingTotalCount);
     }
+
+    public static void main(String[] args) {
+        String jobname1 = "jobname2";
+        String jobname = "jobname";
+        System.out.println(jobname.hashCode());
+        System.out.println(jobname1.hashCode());
+    }
 }

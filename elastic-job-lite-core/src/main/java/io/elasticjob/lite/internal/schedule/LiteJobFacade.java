@@ -105,18 +105,24 @@ public final class LiteJobFacade implements JobFacade {
     
     @Override
     public ShardingContexts getShardingContexts() {
+        //获取是否开启了失效转移
         boolean isFailover = configService.load(true).isFailover();
         if (isFailover) {
             List<Integer> failoverShardingItems = failoverService.getLocalFailoverItems();
             if (!failoverShardingItems.isEmpty()) {
+                //忽略 作业分片详情  获取当前作业服务器分片上下文
                 return executionContextService.getJobShardingContext(failoverShardingItems);
             }
         }
+        //忽略 作业分片详情 作业分片，如果需要分片且当前节点为主节点
         shardingService.shardingIfNecessary();
+        //获得在本机的作业分片项
         List<Integer> shardingItems = shardingService.getLocalShardingItems();
+        //移除 分配在本机的失效转移的作业分片项目
         if (isFailover) {
             shardingItems.removeAll(failoverService.getLocalTakeOffItems());
         }
+        //移除 被禁用的作业分片项
         shardingItems.removeAll(executionService.getDisabledItems(shardingItems));
         return executionContextService.getJobShardingContext(shardingItems);
     }

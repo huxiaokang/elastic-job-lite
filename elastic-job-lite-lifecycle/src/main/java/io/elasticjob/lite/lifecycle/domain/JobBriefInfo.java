@@ -56,9 +56,21 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
      * @author caohao
      */
     public enum JobStatus {
-        OK, 
+        /**
+         * OK
+         */
+        OK,
+        /**
+         * CRASHED
+         */
         CRASHED,
+        /**
+         * DISABLED
+         */
         DISABLED,
+        /**
+         * SHARDING_FLAG
+         */
         SHARDING_FLAG 
     }
 }

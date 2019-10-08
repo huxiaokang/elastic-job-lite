@@ -86,11 +86,13 @@ public final class JobProperties {
         
         /**
          * 作业异常处理器.
+         * 用于扩展异常处理类
          */
         JOB_EXCEPTION_HANDLER("job_exception_handler", JobExceptionHandler.class, DefaultJobExceptionHandler.class.getCanonicalName()),
         
         /**
          * 线程池服务处理器.
+         * 用于扩展作业处理线程池类
          */
         EXECUTOR_SERVICE_HANDLER("executor_service_handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class.getCanonicalName());
         

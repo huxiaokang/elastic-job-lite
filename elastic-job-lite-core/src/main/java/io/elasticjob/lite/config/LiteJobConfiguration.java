@@ -31,21 +31,48 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LiteJobConfiguration implements JobRootConfiguration {
-    
+
+    /**
+     * 作业类型配置信息 包括了simple、dataflow、script作业配置信息
+     * 每次作业执行时间间隔均非常短的情况下，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。
+     * 请用户自行增加数据堆积监控，并且不能保证数据重复选取，应在作业中实现幂等性
+     * 每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取
+     *
+     * 建议配置作业监控端口，方便开发者dump作业信息
+     * 使用方法 echo "dump" | nc 127.0.0.1 9888
+     */
     private final JobTypeConfiguration typeConfig;
     
     private final boolean monitorExecution;
-    
+
+    /**
+     * 设置最大容忍本机与注册中心的时间误差秒数。默认为-1，不检查时间误差（选填）
+     */
     private final int maxTimeDiffSeconds;
-    
+
+    /**
+     * 监控端口
+     */
     private final int monitorPort;
-    
+
+    /**
+     * 作业分片策略实现全路径。默认为使用分配策略，（选填）
+     */
     private final String jobShardingStrategyClass;
-    
+
+    /**
+     * 修复作业服务器不一致状态服务调度间隔时间，配置为小于1的任意值表示不执行修复 默认是10
+     */
     private final int reconcileIntervalMinutes;
-    
+
+    /**
+     * 作业是否禁用执行，默认为false
+     */
     private final boolean disabled;
-    
+
+    /**
+     * 设置使用本地作业覆盖注册中心的作业配置，默认为false
+     */
     private final boolean overwrite;
     
     /**
@@ -75,7 +102,10 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
     public static Builder newBuilder(final JobTypeConfiguration jobConfig) {
         return new Builder(jobConfig);
     }
-    
+
+    /**
+     * 使用该类配置LiteJobConfiguration属性，调用build()方法最终生成作业配置
+     */
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
         

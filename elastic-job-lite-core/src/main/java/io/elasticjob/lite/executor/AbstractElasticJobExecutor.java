@@ -45,27 +45,51 @@ import java.util.concurrent.ExecutorService;
  */
 @Slf4j
 public abstract class AbstractElasticJobExecutor {
-    
+
+    /**
+     * 作业门面类
+     */
     @Getter(AccessLevel.PROTECTED)
     private final JobFacade jobFacade;
-    
+
+    /**
+     * 作业配置
+     */
     @Getter(AccessLevel.PROTECTED)
     private final JobRootConfiguration jobRootConfig;
-    
+
+    /**
+     * 作业名称
+     */
     private final String jobName;
-    
+
+    /**
+     * 作业执行线程池
+     */
     private final ExecutorService executorService;
-    
+
+    /**
+     * 作业一场处理器
+     */
     private final JobExceptionHandler jobExceptionHandler;
-    
+
+    /**
+     * 分片错误信息集合
+     * key：分片序号
+     */
     private final Map<Integer, String> itemErrorMessages;
     
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
+        //加载 作业配置
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
+        //获取job name
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
+        //获取 作业执行线程池
         executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        //获取 作业异常处理器
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+        //设置分片错误信息集合
         itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
     }
     
@@ -96,15 +120,20 @@ public abstract class AbstractElasticJobExecutor {
      */
     public final void execute() {
         try {
+            //检查作业执行环境
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
             jobExceptionHandler.handleException(jobName, cause);
         }
+        //获取分片上下文
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
+        //发布作业状态追踪时间(State.TASK_STAGING)
         if (shardingContexts.isAllowSendJobEvent()) {
             jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobName));
         }
+        //跳过 存在运行中的被错过作业
         if (jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())) {
+            // 发布作业状态追踪事件(State.TASK_FINISHED)
             if (shardingContexts.isAllowSendJobEvent()) {
                 jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format(
                         "Previous job '%s' - shardingItems '%s' is still running, misfired job will start after previous job completed.", jobName, 
@@ -113,17 +142,20 @@ public abstract class AbstractElasticJobExecutor {
             return;
         }
         try {
+            //执行 作业执行前的方法
             jobFacade.beforeJobExecuted(shardingContexts);
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
             jobExceptionHandler.handleException(jobName, cause);
         }
+        //执行 普通触发的作业
         execute(shardingContexts, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
             jobFacade.clearMisfire(shardingContexts.getShardingItemParameters().keySet());
             execute(shardingContexts, JobExecutionEvent.ExecutionSource.MISFIRE);
         }
+        //执行 作业失效转移
         jobFacade.failoverIfNecessary();
         try {
             jobFacade.afterJobExecuted(shardingContexts);

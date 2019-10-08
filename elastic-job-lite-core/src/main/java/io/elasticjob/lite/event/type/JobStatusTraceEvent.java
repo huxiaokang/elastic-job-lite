@@ -44,10 +44,68 @@ public final class JobStatusTraceEvent implements JobEvent {
     private Date creationTime = new Date();
     
     public enum State {
-        TASK_STAGING, TASK_RUNNING, TASK_FINISHED, TASK_KILLED, TASK_LOST, TASK_FAILED, TASK_ERROR, TASK_DROPPED, TASK_GONE, TASK_GONE_BY_OPERATOR, TASK_UNREACHABLE, TASK_UNKNOWN
+        /**
+         * TASK_STAGING
+         */
+        TASK_STAGING,
+        /**
+         * TASK_RUNNING
+         */
+        TASK_RUNNING,
+        /**
+         * TASK_FINISHED
+         */
+        TASK_FINISHED,
+        /**
+         * TASK_KILLED
+         */
+        TASK_KILLED,
+        /**
+         * TASK_LOST
+         */
+        TASK_LOST,
+        /**
+         * TASK_FAILED
+         */
+        TASK_FAILED,
+        /**
+         * TASK_ERROR
+         */
+        TASK_ERROR,
+        /**
+         * TASK_DROPPED
+         */
+        TASK_DROPPED,
+        /**
+         * TASK_GONE
+         */
+        TASK_GONE,
+        /**
+         * TASK_GONE_BY_OPERATOR
+         */
+        TASK_GONE_BY_OPERATOR,
+        /**
+         * TASK_UNREACHABLE
+         */
+        TASK_UNREACHABLE,
+        /**
+         * TASK_UNKNOWN
+         */
+        TASK_UNKNOWN
     }
     
     public enum Source {
-        CLOUD_SCHEDULER, CLOUD_EXECUTOR, LITE_EXECUTOR
+        /**
+         * CLOUD_SCHEDULER
+         */
+        CLOUD_SCHEDULER,
+        /**
+         * CLOUD_EXECUTOR
+         */
+        CLOUD_EXECUTOR,
+        /**
+         * LITE_EXECUTOR
+         */
+        LITE_EXECUTOR
     }
 }

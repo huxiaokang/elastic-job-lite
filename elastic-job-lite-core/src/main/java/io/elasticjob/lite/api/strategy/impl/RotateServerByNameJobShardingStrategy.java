@@ -26,6 +26,7 @@ import java.util.Map;
 
 /**
  * 根据作业名的哈希值对服务器列表进行轮转的分片策略.
+ * 这里的轮转如下：如果有3台作业节点，顺序为【0，1，2】如果作业名的哈希值的绝对值 根据作业分片总数取模为1，作业节点顺序变为[1,2,0]
  * 
  * @author weishubin
  */
@@ -45,6 +46,7 @@ public final class RotateServerByNameJobShardingStrategy implements JobShardingS
             return shardingUnits;
         }
         List<JobInstance> result = new ArrayList<>(shardingUnitsSize);
+        //0,1,2
         for (int i = 0; i < shardingUnitsSize; i++) {
             int index = (i + offset) % shardingUnitsSize;
             result.add(shardingUnits.get(index));

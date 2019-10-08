@@ -98,7 +98,8 @@ public final class MonitorService {
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                Socket autoCloseSocket = socket) {
+                Socket autoCloseSocket = socket
+        ) {
             String cmdLine = reader.readLine();
             if (null != cmdLine && DUMP_COMMAND.equalsIgnoreCase(cmdLine)) {
                 List<String> result = new ArrayList<>();

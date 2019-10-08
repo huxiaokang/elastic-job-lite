@@ -32,9 +32,15 @@ import io.elasticjob.lite.util.env.TimeService;
  * @author caohao
  */
 public final class ConfigurationService {
-    
+
+    /**
+     * 时间服务
+     */
     private final TimeService timeService;
-    
+
+    /**
+     * 作业节点数据访问类
+      */
     private final JobNodeStorage jobNodeStorage;
     
     public ConfigurationService(final CoordinatorRegistryCenter regCenter, final String jobName) {

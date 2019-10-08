@@ -23,6 +23,8 @@ package io.elasticjob.lite.internal.server;
  * @author zhangliang
  */
 public enum ServerStatus {
-    
+    /**
+     * DISABLED
+     */
     DISABLED
 }

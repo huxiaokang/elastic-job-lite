@@ -23,6 +23,8 @@ package io.elasticjob.lite.internal.instance;
  * @author zhangliang
  */
 public enum InstanceOperation {
-    
+    /**
+     * TRIGGER
+     */
     TRIGGER
 }

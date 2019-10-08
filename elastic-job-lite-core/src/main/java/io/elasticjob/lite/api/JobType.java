@@ -23,6 +23,16 @@ package io.elasticjob.lite.api;
  * @author caohao
  */
 public enum JobType {
-    
-    SIMPLE, DATAFLOW, SCRIPT
+    /**
+     * SIMPLE
+     */
+    SIMPLE,
+    /**
+     * DATAFLOW
+     */
+    DATAFLOW,
+    /**
+     * SCRIPT
+     */
+    SCRIPT
 }

@@ -100,21 +100,30 @@ public final class ShardingService {
      * </p>
      */
     public void shardingIfNecessary() {
+        //获取可用的实例信息
         List<JobInstance> availableJobInstances = instanceService.getAvailableJobInstances();
+        //判断是否需要重新分片
         if (!isNeedSharding() || availableJobInstances.isEmpty()) {
             return;
         }
+        //【非主节点】等待，作业分片项分配完成
         if (!leaderService.isLeaderUntilBlock()) {
             blockUntilShardingCompleted();
             return;
         }
+        //【主节点】作业分片项分配
+        // 等待 作业未在运行中状态
         waitingOtherShardingItemCompleted();
         LiteJobConfiguration liteJobConfig = configService.load(false);
         int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
         log.debug("Job '{}' sharding begin.", jobName);
+        //设置 作业正在重分片的标记，临时节点，存储空字符串，仅用于标记作业正在重分片，无特别业务逻辑
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
+        //充值作业分片信息
         resetShardingInfo(shardingTotalCount);
+        //分片策略
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
+        //[事务中]设置 作业分片项信息
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
         log.debug("Job '{}' sharding complete.", jobName);
     }

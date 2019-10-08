@@ -50,7 +50,7 @@ public final class ExecutorServiceObject {
      *
      * @return 线程池服务对象
      */
-    public ExecutorService createExecutorService() {
+    public ExecutorService createExec1utorService() {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }
     

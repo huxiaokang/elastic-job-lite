@@ -30,13 +30,25 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class JobEventBus {
-    
+
+    /**
+     * 作业事件配置
+     */
     private final JobEventConfiguration jobEventConfig;
-    
+
+    /**
+     * 线程池服务对象
+     */
     private final ExecutorServiceObject executorServiceObject;
-    
+
+    /**
+     * 事件总线
+     */
     private final EventBus eventBus;
-    
+
+    /**
+     * 是否注册作业监听器
+     */
     private boolean isRegistered;
     
     public JobEventBus() {

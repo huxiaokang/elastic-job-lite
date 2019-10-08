@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 
 /**
  * 基于Zookeeper注册中心的命名空间解析器.
- * 
+ * 用于解析自定义标签 reg
  * @author caohao
  */
 public final class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionParser {

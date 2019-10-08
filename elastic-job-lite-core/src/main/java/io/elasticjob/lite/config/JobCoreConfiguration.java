@@ -33,23 +33,56 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public final class JobCoreConfiguration {
-    
+
+    /**
+     * 作业名称
+     */
     private final String jobName;
-    
+
+    /**
+     * cron表达式，用于控制作业触发时间
+     */
     private final String cron;
-    
+    /**
+     * 作业分片总数
+     * 如果一个作业启动超过作业总数的节点，只有shardingTotalCount会执行作业
+     */
     private final int shardingTotalCount;
-    
+
+    /**
+     * 分片序列号和参数，多个用逗号分割
+     * 分片序列号从0开始，不能大于或等于作业分片总数
+     * eg：0=a,1=b,2=c
+     *
+     */
     private final String shardingItemParameters;
-    
+
+    /**
+     * 自定义参数
+     * 可以传递该参数为作业调度的方法传参，用于实现带参数的作业用例
+     */
     private final String jobParameter;
-    
+
+    /**
+     * 是否开启失效转移，如果开启了表示作业在一次执行过程中如果发生宕机，允许将该次未完成的任务在另外一个作业节点上补偿执行
+     * 默认：false
+     */
     private final boolean failover;
-    
+
+    /**
+     * 是否开启错过任务重新执行
+     * 默认：true
+     */
     private final boolean misfire;
-    
+
+    /**
+     * 作业描述
+     */
     private final String description;
-    
+
+    /**
+     * 作业属性配置
+     */
     private final JobProperties jobProperties;
     
     /**
